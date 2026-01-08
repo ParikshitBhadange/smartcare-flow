@@ -8,6 +8,12 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import Inventory from "@/pages/Inventory";
+import  Alert  from "./pages/Alerts";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
+import Scan from "./pages/Scan";
+import Transfers from "./pages/Transfers";
 
 const queryClient = new QueryClient();
 
@@ -23,12 +29,12 @@ const App = () => (
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/inventory" element={<Dashboard />} />
-              <Route path="/scan" element={<Dashboard />} />
-              <Route path="/transfers" element={<Dashboard />} />
-              <Route path="/alerts" element={<Dashboard />} />
-              <Route path="/analytics" element={<Dashboard />} />
-              <Route path="/settings" element={<Dashboard />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/scan" element={<Scan />} />
+              <Route path="/transfers" element={<Transfers />} />
+              <Route path="/alerts" element={<Alert />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
