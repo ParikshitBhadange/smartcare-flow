@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/ParikshitBhadange/smartcare-flow/issues"
   },
-  "homepage": "https://github.com/ParikshitBhadange/smartcare-flow#readme"
+  "homepage": "https://github.com/ParikshitBhadange/smartcare-flow#readme",
+  "dependencies": {
+    "framer-motion": "^12.26.2"
+  }
 }
