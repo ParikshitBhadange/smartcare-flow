@@ -16,10 +16,41 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAuth } from '@/contexts/AuthContext';
-import { mockHospitals, mockAlerts } from '@/data/mockData';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
+// Mock data - you should import these from your actual data file
+const mockHospitals = [
+  { id: 'h1', name: 'City General Hospital' },
+  { id: 'h2', name: 'Regional Medical Center' },
+  { id: 'h3', name: 'Central District Hospital' },
+];
+
+const mockAlerts = [
+  {
+    id: '1',
+    title: 'Critical Stock Alert',
+    description: 'Epinephrine levels critically low',
+    severity: 'critical' as const,
+    isRead: false,
+  },
+  {
+    id: '2',
+    title: 'Expiry Warning',
+    description: '15 batches expiring in 30 days',
+    severity: 'high' as const,
+    isRead: false,
+  },
+  {
+    id: '3',
+    title: 'Transfer Approved',
+    description: 'Transfer to Regional Medical approved',
+    severity: 'medium' as const,
+    isRead: true,
+  },
+];
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -27,13 +58,24 @@ interface TopBarProps {
 }
 
 export function TopBar({ onMenuClick, isSidebarCollapsed }: TopBarProps) {
-  const { user, logout, selectedHospitalId, setSelectedHospitalId } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const navigate = useNavigate();
+  
+  // Local state for hospital selection (in production, use global state or context)
+  const [selectedHospitalId, setSelectedHospitalId] = useState('h1');
+  
+  // Get user data from Clerk - updates automatically when profile changes
+  const userRole = (user?.publicMetadata?.role as string) || 'hospital_admin';
+  const userName = user?.fullName || user?.firstName || 'User';
+  const userEmail = user?.primaryEmailAddress?.emailAddress || '';
+  const userImageUrl = user?.imageUrl; // Profile picture from Clerk
+  
   const unreadAlerts = mockAlerts.filter((a) => !a.isRead).length;
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/landingpage');
   };
 
   const getInitials = (name: string) => {
@@ -41,7 +83,8 @@ export function TopBar({ onMenuClick, isSidebarCollapsed }: TopBarProps) {
       .split(' ')
       .map((n) => n[0])
       .join('')
-      .toUpperCase();
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -61,7 +104,7 @@ export function TopBar({ onMenuClick, isSidebarCollapsed }: TopBarProps) {
         </Button>
 
         {/* Hospital Selector */}
-        {user?.role === 'hospital_admin' && (
+        {userRole === 'hospital_admin' && (
           <Select value={selectedHospitalId} onValueChange={setSelectedHospitalId}>
             <SelectTrigger className="w-[220px] bg-background">
               <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -77,11 +120,11 @@ export function TopBar({ onMenuClick, isSidebarCollapsed }: TopBarProps) {
           </Select>
         )}
 
-        {user?.role !== 'hospital_admin' && (
+        {userRole !== 'hospital_admin' && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="h-4 w-4" />
             <span>
-              {user?.role === 'central_admin' ? 'Central Administration' : 'Policy Dashboard'}
+              {userRole === 'central_admin' ? 'Central Administration' : 'Policy Dashboard'}
             </span>
           </div>
         )}
@@ -146,21 +189,30 @@ export function TopBar({ onMenuClick, isSidebarCollapsed }: TopBarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2 px-2">
               <Avatar className="h-8 w-8">
+                {/* Show user's profile picture if uploaded, otherwise show initials */}
+                {userImageUrl && <AvatarImage src={userImageUrl} alt={userName} />}
                 <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                  {user ? getInitials(user.name) : 'U'}
+                  {getInitials(userName)}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden md:flex flex-col items-start">
-                <span className="text-sm font-medium">{user?.name}</span>
+                <span className="text-sm font-medium">{userName}</span>
                 <span className="text-xs text-muted-foreground capitalize">
-                  {user?.role?.replace('_', ' ')}
+                  {userRole.replace('_', ' ')}
                 </span>
               </div>
               <ChevronDown className="h-4 w-4 text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{userName}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {userEmail}
+                </p>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/settings')}>
               <User className="mr-2 h-4 w-4" />

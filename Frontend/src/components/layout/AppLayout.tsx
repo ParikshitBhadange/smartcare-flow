@@ -2,20 +2,15 @@ import { useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { AppSidebar } from './AppSidebar';
 import { TopBar } from './TopBar';
-import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
 export function AppLayout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
+  
   return (
     <div className="min-h-screen bg-background">
       <AppSidebar isCollapsed={isSidebarCollapsed} />
+     
       <TopBar
         onMenuClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         isSidebarCollapsed={isSidebarCollapsed}

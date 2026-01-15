@@ -1,0 +1,21 @@
+{
+  "name": "smartcare-flow",
+  "version": "1.0.0",
+  "description": "Problem: Medicines get overstocked in some hospitals and run out in others due to poor forecasting, manual tracking, and slow redistribution, especially during outbreaks and crises.\r ​\r Solution: A smart logistics platform that forecasts demand, monitors inventory in real time, and optimizes redistribution routes so the right drugs are at the right place and time.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "start": "npm run start --prefix Backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ParikshitBhadange/smartcare-flow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ParikshitBhadange/smartcare-flow/issues"
+  },
+  "homepage": "https://github.com/ParikshitBhadange/smartcare-flow#readme"
+}

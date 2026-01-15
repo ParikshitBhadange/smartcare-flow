@@ -1,0 +1,8 @@
+Backend:-
+1. --watch: for getting live changes without killing terminal or rerunning the terminal, developer only have to save the changes and refresh the browser page to load changes in live time
+2. lib/env.js: in lib folder, there is env.js file controll the all .env varibale and values. Now no need to import and configure the environment varibale in another file where we use it, simply configure them into one single JS file and import that file when needed.
+
+
+
+GitIgnore file:- it used to ignore some files and modules while pushing code on github so that the security of code get increases and threatend get reduced. maily we add .env files and node_modules.
+  

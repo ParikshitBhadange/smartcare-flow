@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Building2, Users, Bell, Save, Plus } from 'lucide-react';
+import { UserProfile } from '@clerk/clerk-react';
+import { Building2, Bell, Save } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -14,22 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-
-const mockUsers = [
-  { id: '1', name: 'Dr. Sarah Johnson', email: 'sarah@hospital.com', role: 'Admin', active: true },
-  { id: '2', name: 'John Smith', email: 'john@hospital.com', role: 'Pharmacist', active: true },
-  { id: '3', name: 'Emily Davis', email: 'emily@hospital.com', role: 'Store Manager', active: true },
-  { id: '4', name: 'Michael Brown', email: 'michael@hospital.com', role: 'Viewer', active: false },
-];
 
 export default function Settings() {
   const { toast } = useToast();
@@ -58,25 +43,58 @@ export default function Settings() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Settings</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your hospital profile and system preferences
+          Manage your account, hospital profile, and system preferences
         </p>
       </div>
 
-      <Tabs defaultValue="hospital">
+      <Tabs defaultValue="profile">
         <TabsList>
+          <TabsTrigger value="profile" className="gap-2">
+            Profile & Security
+          </TabsTrigger>
           <TabsTrigger value="hospital" className="gap-2">
             <Building2 className="h-4 w-4" />
-            Hospital Profile
-          </TabsTrigger>
-          <TabsTrigger value="users" className="gap-2">
-            <Users className="h-4 w-4" />
-            User Management
+            Hospital Settings
           </TabsTrigger>
           <TabsTrigger value="alerts" className="gap-2">
             <Bell className="h-4 w-4" />
-            Alert Settings
+            Alerts
           </TabsTrigger>
         </TabsList>
+
+        {/* Clerk Profile Management */}
+        <TabsContent value="profile" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Account Management</CardTitle>
+              <CardDescription>
+                Manage your personal profile, security settings, and connected accounts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <UserProfile 
+                  appearance={{
+                    elements: {
+                      rootBox: "w-full",
+                      card: "shadow-none border-0",
+                      navbar: "bg-muted/50",
+                      navbarButton: "text-foreground hover:bg-muted",
+                      pageScrollBox: "bg-background",
+                      formButtonPrimary: "bg-primary hover:bg-primary/90",
+                    },
+                    variables: {
+                      colorPrimary: "hsl(var(--primary))",
+                      colorBackground: "hsl(var(--background))",
+                      colorInputBackground: "hsl(var(--background))",
+                      colorInputText: "hsl(var(--foreground))",
+                    }
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Hospital Profile */}
         <TabsContent value="hospital" className="mt-6 space-y-6">
@@ -143,61 +161,6 @@ export default function Settings() {
                 <Save className="h-4 w-4" />
                 Save Changes
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* User Management */}
-        <TabsContent value="users" className="mt-6 space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Team Members</CardTitle>
-                <CardDescription>Manage users and their access permissions</CardDescription>
-              </div>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add User
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mockUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                      <TableCell>{user.role}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className={
-                            user.active
-                              ? 'bg-success/10 text-success border-success/20'
-                              : 'bg-muted text-muted-foreground'
-                          }
-                        >
-                          {user.active ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
-                          Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
             </CardContent>
           </Card>
         </TabsContent>
