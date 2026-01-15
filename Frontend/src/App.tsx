@@ -22,81 +22,86 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <>
-          {/* Loading state while Clerk initializes */}
-          <ClerkLoading>
-            <div className="min-h-screen flex items-center justify-center bg-background">
-              <div className="text-center space-y-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                <p className="text-muted-foreground">Loading...</p>
-              </div>
-            </div>
-          </ClerkLoading>
+        <Routes>
+          {/* Landing Page - PUBLIC, loads immediately without waiting for Clerk */}
+          <Route
+            path="/landingpage"
+            element={
+              <>
+                <SignedIn>
+                  <Navigate to="/dashboard" replace />
+                </SignedIn>
+                <SignedOut>
+                  <LandingPage />
+                </SignedOut>
+              </>
+            }
+          />
 
-          {/* Main app - only renders after Clerk is loaded */}
-          <ClerkLoaded>
-            <Routes>
-              {/* Landing Page - signed out users only */}
-              <Route
-                path="/landingpage"
-                element={
-                  <>
-                    <SignedIn>
-                      <Navigate to="/dashboard" replace />
-                    </SignedIn>
-                    <SignedOut>
-                      <LandingPage />
-                    </SignedOut>
-                  </>
-                }
-              />
+          {/* Root route - redirect based on auth status */}
+          <Route
+            path="/"
+            element={
+              <>
+                <ClerkLoading>
+                  <div className="min-h-screen flex items-center justify-center bg-background">
+                    <div className="text-center space-y-4">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                      <p className="text-muted-foreground">Loading...</p>
+                    </div>
+                  </div>
+                </ClerkLoading>
+                <ClerkLoaded>
+                  <SignedIn>
+                    <Navigate to="/dashboard" replace />
+                  </SignedIn>
+                  <SignedOut>
+                    <Navigate to="/landingpage" replace />
+                  </SignedOut>
+                </ClerkLoaded>
+              </>
+            }
+          />
 
-              {/* Root route - redirect based on auth status */}
-              <Route
-                path="/"
-                element={
-                  <>
-                    <SignedIn>
-                      <Navigate to="/dashboard" replace />
-                    </SignedIn>
-                    <SignedOut>
-                      <Navigate to="/landingpage" replace />
-                    </SignedOut>
-                  </>
-                }
-              />
+          {/* Protected routes - require authentication */}
+          <Route
+            element={
+              <>
+                <ClerkLoading>
+                  <div className="min-h-screen flex items-center justify-center bg-background">
+                    <div className="text-center space-y-4">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                      <p className="text-muted-foreground">Loading...</p>
+                    </div>
+                  </div>
+                </ClerkLoading>
+                <ClerkLoaded>
+                  <SignedIn>
+                    <AppLayout />
+                  </SignedIn>
+                  <SignedOut>
+                    <Navigate to="/landingpage" replace />
+                  </SignedOut>
+                </ClerkLoaded>
+              </>
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/scan" element={<Scan />} />
+            <Route path="/transfers" element={<Transfers />} />
+            <Route path="/alerts" element={<Alerts />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
 
-              {/* Protected routes - require authentication */}
-              <Route
-                element={
-                  <>
-                    <SignedIn>
-                      <AppLayout />
-                    </SignedIn>
-                    <SignedOut>
-                      <Navigate to="/landingpage" replace />
-                    </SignedOut>
-                  </>
-                }
-              >
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/inventory" element={<Inventory />} />
-                <Route path="/scan" element={<Scan />} />
-                <Route path="/transfers" element={<Transfers />} />
-                <Route path="/alerts" element={<Alerts />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/settings" element={<Settings />} />
-              </Route>
+          {/* 404 Not Found */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
 
-              {/* 404 Not Found */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </ClerkLoaded>
-
-          {/* Toast notifications */}
-          <Toaster />
-          <Sonner />
-        </>
+        {/* Toast notifications */}
+        <Toaster />
+        <Sonner />
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,8 +1,28 @@
+Running Project:-
+1. Frontend: (npm run dev) for the running frontend on 8080 port
+2. Backend: (npm run dev) for running backend on 3000 port.
+3. Combine running: when we push all code and someone clone the project they have to run (num run build) to download the node_modules and dependemcy and then run (nom tun start) to start frontend and backend on same link. 
+this script code given into the root folder(smartcare) package.json 
+
+
+
+
 Backend:-
 1. --watch: for getting live changes without killing terminal or rerunning the terminal, developer only have to save the changes and refresh the browser page to load changes in live time
 2. lib/env.js: in lib folder, there is env.js file controll the all .env varibale and values. Now no need to import and configure the environment varibale in another file where we use it, simply configure them into one single JS file and import that file when needed.
+3. lib/db.js (MongoDB):it conatin all the database all functionality related to the database and reduce the import step in different files only have to import the db.js file for accessing the database
+4.
+
+
+
+
+Frontend:-
+1. clerk:- used for the auth
+2. .env: it contain clerk key for auth, 
+3.
+
 
 
 
 GitIgnore file:- it used to ignore some files and modules while pushing code on github so that the security of code get increases and threatend get reduced. maily we add .env files and node_modules.
-  
+We use Innget for joining clerk + MongoDB and share information.

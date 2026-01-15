@@ -4,6 +4,10 @@ import path from 'path';
 import { connectDB } from './lib/db.js';
 
 const app = express();
+// Add middleware for parsing JSON
+app.use(express.json());
+
+
 
 const __dirname = path.resolve();
 
