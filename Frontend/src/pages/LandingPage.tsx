@@ -1,4 +1,4 @@
-import { SignInButton } from "@clerk/clerk-react";
+import { SignInButton, ClerkLoaded } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { 
   Package, 
@@ -23,6 +23,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+// Safe wrapper for SignInButton that only renders when Clerk is ready
+const SafeSignInButton = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <ClerkLoaded>
+      <SignInButton>
+        {children}
+      </SignInButton>
+    </ClerkLoaded>
+  );
+};
 
 const features = [
   {
@@ -180,14 +191,14 @@ const LandingPage = () => {
                 SmartCare Flow
               </span>
             </motion.div>
-            <SignInButton>
+            <SafeSignInButton>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-lg shadow-primary/25">
                   Sign In
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
-            </SignInButton>
+            </SafeSignInButton>
           </div>
         </div>
       </motion.nav>
@@ -231,14 +242,14 @@ const LandingPage = () => {
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
               variants={fadeInUp}
             >
-              <SignInButton>
+              <SafeSignInButton>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button size="lg" className="text-base px-8 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl shadow-primary/30">
                     Get Started Free
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </motion.div>
-              </SignInButton>
+              </SafeSignInButton>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="outline" size="lg" className="text-base px-8 border-2 group">
                   <Play className="w-5 h-5 mr-2 group-hover:text-primary transition-colors" />
@@ -594,7 +605,7 @@ const LandingPage = () => {
             Join hundreds of healthcare facilities already using SmartCare Flow to 
             reduce wastage, prevent shortages, and save lives.
           </p>
-          <SignInButton>
+          <SafeSignInButton>
             <motion.div 
               whileHover={{ scale: 1.05 }} 
               whileTap={{ scale: 0.95 }}
@@ -605,7 +616,7 @@ const LandingPage = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
-          </SignInButton>
+          </SafeSignInButton>
           <p className="mt-4 text-sm text-muted-foreground flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-green-500" />
             No credit card required · Free forever plan

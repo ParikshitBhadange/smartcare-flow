@@ -1,11 +1,11 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { SignedIn, SignedOut, ClerkLoaded, ClerkLoading } from '@clerk/clerk-react';
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { AppLayout } from "@/components/layout/AppLayout";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Dashboard from "@/pages/Dashboard";
 import Inventory from "@/pages/Inventory";
 import Scan from "@/pages/Scan";
@@ -14,7 +14,7 @@ import Alerts from "@/pages/Alerts";
 import Analytics from "@/pages/Analytics";
 import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
-import LandingPage from "./pages/LandingPage";
+import SimpleLanding from "./pages/SimpleLanding";
 
 const queryClient = new QueryClient();
 
@@ -23,83 +23,23 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Routes>
-          {/* Landing Page - PUBLIC, loads immediately without waiting for Clerk */}
-          <Route
-            path="/landingpage"
-            element={
-              <>
-                <SignedIn>
-                  <Navigate to="/dashboard" replace />
-                </SignedIn>
-                <SignedOut>
-                  <LandingPage />
-                </SignedOut>
-              </>
-            }
-          />
+          {/* Public landing page */}
+          <Route path="/" element={<SimpleLanding />} />
+          <Route path="/landingpage" element={<SimpleLanding />} />
 
-          {/* Root route - redirect based on auth status */}
-          <Route
-            path="/"
-            element={
-              <>
-                <ClerkLoading>
-                  <div className="min-h-screen flex items-center justify-center bg-background">
-                    <div className="text-center space-y-4">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                      <p className="text-muted-foreground">Loading...</p>
-                    </div>
-                  </div>
-                </ClerkLoading>
-                <ClerkLoaded>
-                  <SignedIn>
-                    <Navigate to="/dashboard" replace />
-                  </SignedIn>
-                  <SignedOut>
-                    <Navigate to="/landingpage" replace />
-                  </SignedOut>
-                </ClerkLoaded>
-              </>
-            }
-          />
-
-          {/* Protected routes - require authentication */}
-          <Route
-            element={
-              <>
-                <ClerkLoading>
-                  <div className="min-h-screen flex items-center justify-center bg-background">
-                    <div className="text-center space-y-4">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                      <p className="text-muted-foreground">Loading...</p>
-                    </div>
-                  </div>
-                </ClerkLoading>
-                <ClerkLoaded>
-                  <SignedIn>
-                    <AppLayout />
-                  </SignedIn>
-                  <SignedOut>
-                    <Navigate to="/landingpage" replace />
-                  </SignedOut>
-                </ClerkLoaded>
-              </>
-            }
-          >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/scan" element={<Scan />} />
-            <Route path="/transfers" element={<Transfers />} />
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
+          {/* Protected App pages with layout */}
+          <Route path="/dashboard" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
+          <Route path="/inventory" element={<ProtectedRoute><AppLayout><Inventory /></AppLayout></ProtectedRoute>} />
+          <Route path="/scan" element={<ProtectedRoute><AppLayout><Scan /></AppLayout></ProtectedRoute>} />
+          <Route path="/transfers" element={<ProtectedRoute><AppLayout><Transfers /></AppLayout></ProtectedRoute>} />
+          <Route path="/alerts" element={<ProtectedRoute><AppLayout><Alerts /></AppLayout></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><AppLayout><Analytics /></AppLayout></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
 
           {/* 404 Not Found */}
           <Route path="*" element={<NotFound />} />
         </Routes>
 
-        {/* Toast notifications */}
         <Toaster />
         <Sonner />
       </TooltipProvider>

@@ -20,7 +20,7 @@ export interface Hospital {
   contactEmail: string;
 }
 
-export type BatchStatus = 'normal' | 'low' | 'overstock' | 'near_expiry' | 'expired';
+export type BatchStatus = 'normal' | 'low' | 'overstock' | 'near_expiry' | 'expired' | 'out_of_stock';
 
 export interface DrugBatch {
   id: string;
@@ -28,11 +28,13 @@ export interface DrugBatch {
   batchId: string;
   quantity: number;
   unit: string;
-  location: string;
+  ratePerUnit: number;
+  totalCost: number;
   expiryDate: string;
   manufacturer: string;
   status: BatchStatus;
   hospitalId: string;
+  userId?: string;
   category: string;
   reorderLevel: number;
   lastUpdated: string;

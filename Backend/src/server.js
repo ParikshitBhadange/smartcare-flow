@@ -1,13 +1,17 @@
 import express from 'express';
+import cors from 'cors';
 import { ENV } from './lib/env.js';
 import path from 'path';
 import { connectDB } from './lib/db.js';
+import drugBatchRoutes from './routes/drugBatchRoutes.js';
 
 const app = express();
+
+// Add middleware for CORS
+app.use(cors());
+
 // Add middleware for parsing JSON
 app.use(express.json());
-
-
 
 const __dirname = path.resolve();
 
@@ -17,7 +21,10 @@ app.get('/health', (req, res) => {
 
 app.get('/books', (req, res) => {
     res.status(200).json( {msg: "success from api books check "} );
-})
+});
+
+// API Routes
+app.use('/api/drug-batches', drugBatchRoutes);
 
 
 // make app ready for deployment to help serve frontend
